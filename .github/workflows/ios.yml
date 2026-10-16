@@ -1,0 +1,23 @@
+name: Build iOS sin firma (manual)
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: flutter create --platforms=ios --project-name claude_organizador --org com.claude.organizador .
+      - run: flutter pub get
+      - run: flutter build ios --release --no-codesign
+      - uses: actions/upload-artifact@v4
+        with:
+          name: claude-organizador-ios-sin-firma
+          path: build/ios/iphoneos/Runner.app/
